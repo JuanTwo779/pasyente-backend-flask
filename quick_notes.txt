@@ -1,0 +1,14 @@
+Database connection string:
+- using pymysql + SQLAlchemy
+- mysql+pymysql://db_user:db_password@host:host_port/db_name
+
+Table creation, migration:
+- run; python table_db.py
+
+View docker database on terminal: 
+1. docker exec -it container_name mysql -u username -p
+2. USE db_name
+3. some commands
+- show tables;
+- select * from table_name
+- show columns from table_name
