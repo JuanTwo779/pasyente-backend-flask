@@ -2,7 +2,7 @@ Database connection string:
 - using pymysql + SQLAlchemy
 - mysql+pymysql://db_user:db_password@host:host_port/db_name
 
-Table creation, migration:
+Table creation (Initial):
 - run; python table_db.py
 
 View docker database on terminal: 
@@ -12,3 +12,8 @@ View docker database on terminal:
 - show tables;
 - select * from table_name
 - show columns from table_name
+
+DB migration
+- using Flask-Migrate -> extension of SQLAlchemy
+1. flask db migrate -m "Migration_name"
+2. flask db upgrade

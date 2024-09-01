@@ -1,19 +1,24 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from datetime import datetime, timezone
 
 # Flask instance
 app = Flask(__name__)
 
 # Add database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://JuanMangubat:Hansosjsneia-09@localhost:3307/pasyente_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialise database
 db = SQLAlchemy(app)
 
+# migration
+migrate = Migrate(app, db)
+
 # create model
 from routes.Patient import Patient
+from routes.Appointment import Appointment
 
 class Business(db.Model):
      id = db.Column(db.Integer, primary_key=True)
