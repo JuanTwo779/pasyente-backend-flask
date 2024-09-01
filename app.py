@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 app = Flask(__name__)
 
 # Add database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://JuanMangubat:Hansosjsneia-09@localhost:3307/pasyente_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialise database
