@@ -1,4 +1,5 @@
-from app import db, datetime, timezone
+from app import db
+from datetime import datetime, timezone
 
 class Patient(db.Model):
      patient_id = db.Column(db.Integer, primary_key=True)
