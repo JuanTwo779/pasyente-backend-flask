@@ -1,8 +1,9 @@
 from app import db
 
 class Appointment(db.Model):
-     app_id = db.Column(db.Integer, primary_key=True)
+     appointment_id = db.Column(db.Integer, primary_key=True)
      patient_id = db.Column(db.Integer, nullable=False)
+     business_id = db.Column(db.Integer, nullable=False)
      time = db.Column(db.Time, nullable=False)
      date = db.Column(db.Date, nullable=False)
 

@@ -1,7 +1,7 @@
 from app import db, datetime, timezone
 
 class Patient(db.Model):
-     id = db.Column(db.Integer, primary_key=True)
+     patient_id = db.Column(db.Integer, primary_key=True)
      business_id = db.Column(db.Integer, nullable=False)
      first_name = db.Column(db.String(200), nullable=False, unique=True)
      last_name = db.Column(db.String(200), nullable=False, unique=True)
