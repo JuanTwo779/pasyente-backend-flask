@@ -2,25 +2,26 @@ from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy import text, inspect
-
-
 from dotenv import load_dotenv
 import os
 
+
+# load environment variables
 load_dotenv()
 
 # Flask instance
 app = Flask(__name__)
 
-# Add database
+# Database config
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# Initialise database
 db = SQLAlchemy(app)
-
-# migration
 migrate = Migrate(app, db)
+
+# Blueprints
+from routes import register_blueprints
+register_blueprints(app)
+
 
 # secret env test
 # @app.route("/test_env")
