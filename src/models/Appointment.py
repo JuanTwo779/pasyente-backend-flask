@@ -7,8 +7,8 @@ class Appointment(db.Model):
      time = db.Column(db.Time, nullable=False)
      date = db.Column(db.Date, nullable=False)
 
-     patient = db.relationship('Patient', backref='appointments', lazy=True)
-     business = db.relationship('Business', backref='appointments', lazy=True)
+     # patient = db.relationship('Patient', backref='appointments', lazy=True)
+     # business = db.relationship('Business', backref='appointments', lazy=True)
 
      def __init__(self, patient_id, business_id, time, date):
           self.patient_id = patient_id

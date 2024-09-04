@@ -1,5 +1,6 @@
 from src.extensions import db
 from datetime import datetime, timezone
+from sqlalchemy import ForeignKey
 
 class Patient(db.Model):
      patient_id = db.Column(db.Integer, primary_key=True)
@@ -10,8 +11,8 @@ class Patient(db.Model):
      date_added = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
      # relationships
-     business = db.relationship('Business', backref='patients', lazy=True)
-     appointments = db.relationship('Appointment', backref='patient', lazy=True)
+     # business = db.relationship('Business', backref='patients', lazy=True)
+     # appointments = db.relationship('Appointment', backref='patient', lazy=True)
 
      def __init__(self, business_id, first_name, last_name, phone, date_added):
           self.business_id = business_id
