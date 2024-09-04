@@ -14,7 +14,8 @@ def retrieve_business_serivce(business_id):
      if business is None:
           return jsonify({'error': 'Business not found'}), 404
      else:
-          return jsonify(business.to_dict())
+          return business
+          # return jsonify(business.to_dict())
      
 # U
 def update_business_service(business_id, name, phone):
