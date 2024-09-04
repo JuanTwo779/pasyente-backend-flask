@@ -17,3 +17,29 @@ def retrieve_business_serivce(business_id):
           return jsonify(business.to_dict())
      
 # U
+def update_business_service(business_id, name, phone):
+     business = Business.query.get(business_id)
+     if business is None:
+          return jsonify({'error': 'Business not found'}), 404
+     else:
+          business.name = name
+          business.phone = phone
+          db.session.commit()
+          return business
+
+# D
+def delete_business_service(business_id):
+     business = Business.query.get(business_id)
+     if business is None:
+          return jsonify({'error': 'Business not found'}), 404
+     else:
+          db.session.delete(business)
+          db.session.commit()
+          return ('Business account with Id "{}" deleted successfully').format(business_id)
+          
+# R all
+def list_all_business_service():
+     businesses = Business.query.all()
+     response = []
+     for business in businesses: response.append(business.to_dict())
+     return response
