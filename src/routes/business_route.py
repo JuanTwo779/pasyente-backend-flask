@@ -6,7 +6,7 @@ business_bp = Blueprint('business', __name__)
 
 # get all
 from src.service.business_service import list_all_business_service
-@business_bp.route('/', methods=['GET'])
+@business_bp.route('/list', methods=['GET'])
 def list_all_business():
      try:
           return jsonify(list_all_business_service())
