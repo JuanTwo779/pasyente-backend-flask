@@ -9,7 +9,7 @@ class Business(db.Model):
      date_added = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
      # Reverse relationship to patient
-     patients = db.relationship
+     patient = db.relationship('Patient', backref='business')
 
      def __init__(self, name, phone):
           self.name = name
