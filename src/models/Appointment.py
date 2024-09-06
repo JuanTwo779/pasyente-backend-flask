@@ -18,6 +18,6 @@ class Appointment(db.Model):
                'id': self.appointment_id,
                'patient_id': self.patient_id,
                'business_id': self.business_id,
-               'date': self.date,
-               'time': self.time
+               'date': self.date.strftime('%d-%m-%Y'), 
+               'time': self.time.strftime('%H:%M:%S') 
           }
