@@ -12,3 +12,12 @@ class Appointment(db.Model):
           self.business_id = business_id
           self.time = time
           self.date = date
+
+     def to_dict(self):
+          return {
+               'id': self.appointment_id,
+               'patient_id': self.patient_id,
+               'business_id': self.business_id,
+               'date': self.date,
+               'time': self.time
+          }

@@ -8,8 +8,8 @@ class Business(db.Model):
      phone = db.Column(db.String(15), nullable=False, unique=True)
      date_added = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
-     # Reverse relationship to patient
      patient = db.relationship('Patient', backref='business')
+     appointment = db.relationship('Appointment', backref='business')
 
      def __init__(self, name, phone):
           self.name = name
