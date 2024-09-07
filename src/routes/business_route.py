@@ -1,8 +1,26 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, flash, redirect, url_for, render_template
 from src.models.Business import Business
 from src.extensions import db
 
 business_bp = Blueprint('business', __name__)
+
+from src.service.business_service import retrieve_businesses_serivce_by_name
+@business_bp.route('/search-business', methods=['GET', 'POST'])
+def search_business():
+     if request.method == 'POST':
+          # # Get search query
+          search_query = request.form.get('search_query')
+          # # Get businesses given the query
+          businesses = retrieve_businesses_serivce_by_name(search_query)
+          # # Create new business if no results
+          if not businesses:
+               flash('No businesses found, Please create a new business.')
+               return redirect(url_for('new_business'))
+          # # Go to selection page if there are results
+          return render_template('select_business.html', businesses=businesses)
+     
+     # Main serach business template
+     return render_template('search_business.html')
 
 # get all
 from src.service.business_service import list_all_business_service

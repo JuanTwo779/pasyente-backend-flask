@@ -2,6 +2,11 @@ from src.extensions import db
 from src.models.Business import Business
 from flask import jsonify
 
+# Get by name
+def retrieve_businesses_serivce_by_name(search_query):
+     businesses = Business.query.filter(Business.name.contains(search_query))
+     return businesses
+
 # C
 def create_business_service(name, phone):
      new_business = Business(name, phone)
@@ -15,7 +20,6 @@ def retrieve_business_serivce(business_id):
           return jsonify({'error': 'Business not found'}), 404
      else:
           return business
-          # return jsonify(business.to_dict())
      
 # U
 def update_business_service(business_id, name, phone):

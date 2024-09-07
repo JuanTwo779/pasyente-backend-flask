@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+     <form method="POST" action="{{ url_for('business.search_business') }}">
+          <input type="text" name="search_query" placeholder="Search business by name" required >
+          <button type="submit">Seach</button>
+     </form>
+
+{% endblock %}
