@@ -2,9 +2,41 @@
 
 {% block content %}
 
-     <form method="POST" action="{{ url_for('business.search_business') }}">
-          <input type="text" name="search_query" placeholder="Search business by name" required >
-          <button type="submit">Seach</button>
-     </form>
+
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{message}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+
+    <!-- SEARCH FORM -->
+    <form method="POST" action="{{ url_for('main.search_business_name') }}">
+        {{ form.hidden_tag() }}
+        {{ form.query.label(class="form-label") }} 
+        {{ form.query(class="form-control") }}
+        <br/>
+        {{ form.search(class="btn btn-primary")}}
+    </form>
+
+    <br/>
+    {% if businesses %}
+        <form method="POST" action="{{ url_for('main.select_business') }}">
+            {{ form.hidden_tag() }}
+            <div class="list-group">
+                {% for business in businesses %}
+                    <button type="submit" class="list-group-item list-group-item-action"
+                            name="selected_business" value="{{ business.business_id }}">
+                        {{ business.name }}
+                    </button>
+                {% endfor %}
+            </div>
+            <br/>
+        </form>
+    {% elif request.method == 'POST' %}
+        <small>No results found.</small>
+    {% endif %}
 
 {% endblock %}
