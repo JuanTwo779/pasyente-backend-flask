@@ -22,6 +22,7 @@
     </form>
 
     <br/>
+    <!-- SELECT BUSINESS SECTION -->
     {% if businesses %}
         <form method="POST" action="{{ url_for('main.select_business') }}">
             {{ form.hidden_tag() }}

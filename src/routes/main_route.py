@@ -29,7 +29,7 @@ def name():
           name = name,
           form = form)
 
-# search business forms
+# SEARCH FOR BUSINESS
 class BusinessesForm(FlaskForm):
      query = StringField("Search business name", validators=[DataRequired()])
      search = SubmitField("Search")
@@ -50,14 +50,37 @@ def search_business_name():
           businesses = businesses,
           form = form)
 
+# SELECT BUSINSESS
 @main_bp.route("/select-business", methods=["POST"])
 def select_business():
-     selected_business_id = request.form.get('selected_business')
+     selected_business_id = request.form.get('selected_business') #pass on to next page
 
      if not selected_business_id:
           flash('Please select a business to continue.', 'warning')
           return redirect(url_for('main.search_business_name'))
      
-
      return render_template('search_patient.html')
      # return redirect(url_for('main.search_patient', business_id=selected_business_id))
+
+# CREATE NEW BUSINESS
+class NewBusinessForm(FlaskForm):
+     name = StringField("Enter your business's name here:", validators=[DataRequired()])
+     phone = StringField("Enter your business's phone number here:", validators=[DataRequired()])
+     create = SubmitField("Create")
+
+from src.service.business_service import create_business_service
+@main_bp.route("/create-business", methods=["GET", "POST"])
+def create_new_business():
+     form = NewBusinessForm()
+
+     if form.validate_on_submit():
+          name = form.name.data
+          phone = form.phone.data
+          create_business_service(name=name, phone=phone)
+          flash("Business: " + name + " successfully created!")
+          return render_template('search_business.html', form = BusinessesForm())
+     
+     return render_template('create_business.html', form = form)
+
+
+
