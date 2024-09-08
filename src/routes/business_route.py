@@ -5,22 +5,19 @@ from src.extensions import db
 business_bp = Blueprint('business', __name__)
 
 from src.service.business_service import retrieve_businesses_serivce_by_name
-@business_bp.route('/search-business', methods=['GET', 'POST'])
-def search_business():
-     if request.method == 'POST':
-          # # Get search query
-          search_query = request.form.get('search_query')
-          # # Get businesses given the query
-          businesses = retrieve_businesses_serivce_by_name(search_query)
-          # # Create new business if no results
-          if not businesses:
-               flash('No businesses found, Please create a new business.')
-               return redirect(url_for('new_business'))
-          # # Go to selection page if there are results
-          return render_template('select_business.html', businesses=businesses)
-     
-     # Main serach business template
-     return render_template('search_business.html')
+@business_bp.route('/test-search-business', methods=['GET', 'POST'])
+def test_search_business():
+    # Get the search query from the request parameters
+    search_query = request.args.get('search_query', '')
+
+    # Call the service method with the provided query
+    businesses = retrieve_businesses_serivce_by_name(search_query)
+
+    # Convert the business objects to dictionaries or JSON-serializable format
+    businesses_list = [{'id': business.business_id, 'name': business.name} for business in businesses]
+
+    # Return the result as JSON
+    return jsonify(businesses_list)
 
 # get all
 from src.service.business_service import list_all_business_service

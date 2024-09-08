@@ -4,7 +4,7 @@ from flask import jsonify
 
 # Get by name
 def retrieve_businesses_serivce_by_name(search_query):
-     businesses = Business.query.filter(Business.name.contains(search_query))
+     businesses = Business.query.filter(Business.name.contains(search_query)).all()
      return businesses
 
 # C
