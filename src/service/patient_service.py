@@ -2,6 +2,13 @@ from src.extensions import db
 from src.models.Patient import Patient
 from src.models.Business import Business
 
+# Retrieve by name or phone
+def retrieve_patient_serivce_by_name_or_phone(search_query):
+     patients = Patient.query.filter((Patient.first_name.contains(search_query)) | 
+                                    (Patient.phone.contains(search_query)) |
+                                    (Patient.last_name.contains(search_query))).all()
+     return patients
+
 # C
 def create_patient_service(business_id, first_name, last_name, phone):
      # check business exists

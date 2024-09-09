@@ -29,9 +29,9 @@ def name():
           name = name,
           form = form)
 
-# SEARCH FOR BUSINESS
+# 1) SEARCH FOR BUSINESS
 class BusinessesForm(FlaskForm):
-     query = StringField("Search business name", validators=[DataRequired()])
+     query = StringField("Enter business name", validators=[DataRequired()])
      search = SubmitField("Search")
 
 from src.service.business_service import retrieve_businesses_serivce_by_name
@@ -44,13 +44,13 @@ def search_business_name():
           search_query = form.query.data
           businesses = retrieve_businesses_serivce_by_name(search_query)
           if not businesses:
-               flash("Create a new business")
+               flash("Business does not exist. Please contact us at 0481988967")
 
      return render_template("search_business.html",
           businesses = businesses,
           form = form)
 
-# SELECT BUSINSESS
+# 1.1) SELECT BUSINSESS
 @main_bp.route("/select-business", methods=["POST"])
 def select_business():
      selected_business_id = request.form.get('selected_business') #pass on to next page
@@ -59,10 +59,9 @@ def select_business():
           flash('Please select a business to continue.', 'warning')
           return redirect(url_for('main.search_business_name'))
      
-     return render_template('search_patient.html')
-     # return redirect(url_for('main.search_patient', business_id=selected_business_id))
+     return redirect(url_for('main.search_patient', business_id=selected_business_id))
 
-# CREATE NEW BUSINESS
+# 1.2) CREATE NEW BUSINESS
 class NewBusinessForm(FlaskForm):
      name = StringField("Enter your business's name here:", validators=[DataRequired()])
      phone = StringField("Enter your business's phone number here:", validators=[DataRequired()])
@@ -82,5 +81,39 @@ def create_new_business():
      
      return render_template('create_business.html', form = form)
 
+# 2) SEARCH FOR PATIENTS
+class PatientsForm(FlaskForm):
+     query = StringField("Search patient by name or phone", validators=[DataRequired()])
+     search = SubmitField("Search")
+
+from src.service.patient_service import retrieve_patient_serivce_by_name_or_phone
+@main_bp.route("/search-patient", methods=["GET", "POST"])
+def search_patient():
+     form = PatientsForm()
+     patients = []
+
+     business_id = request.form.get('business_id')
+
+     if form.validate_on_submit():
+          search_query = form.query.data
+          patients = retrieve_patient_serivce_by_name_or_phone(search_query)
+          if not patients:
+               flash("Create a new patient")
+
+     return render_template("search_patient.html",
+          patients = patients,
+          form = form)
+
+# 2.1) SELECT PATIENT
+@main_bp.route('/select-patient', methods=["POST"])
+def select_patient():
+     selected_business_id = request.form.get('business_id')
+     selected_patient_id = request.form.get('selected_patient')
+
+     # if not selected_business_id:
+     #      flash('Please select a patient to continue.', 'warning')
+     #      return redirect(url_for('main.search_patient'))
+     
+     return redirect(url_for('main.make_appointment', business_id=selected_business_id, patient_id=selected_patient_id))
 
 
