@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, flash, redirect, request, url_for
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, RadioField
+from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 
 main_bp = Blueprint('main', __name__)
@@ -92,17 +92,19 @@ def search_patient():
      form = PatientsForm()
      patients = []
 
-     business_id = request.form.get('business_id')
+     business_id = request.args.get('business_id') or request.form.get('business_id')
 
      if form.validate_on_submit():
           search_query = form.query.data
           patients = retrieve_patient_serivce_by_name_or_phone(search_query)
           if not patients:
                flash("Create a new patient")
+               
 
      return render_template("search_patient.html",
           patients = patients,
-          form = form)
+          form = form,
+          business_id = business_id)
 
 # 2.1) SELECT PATIENT
 @main_bp.route('/select-patient', methods=["POST"])
@@ -114,6 +116,39 @@ def select_patient():
      #      flash('Please select a patient to continue.', 'warning')
      #      return redirect(url_for('main.search_patient'))
      
-     return redirect(url_for('main.make_appointment', business_id=selected_business_id, patient_id=selected_patient_id))
+     return redirect(url_for('main.create_appointment', business_id=selected_business_id, patient_id=selected_patient_id))
 
+# 2.2) CREATE NEW PATIENT
+class NewPatientForm(FlaskForm):
+     first_name = StringField("Enter patient's given name", validators=[DataRequired()])
+     last_name = StringField("Enter patient's surname", validators=[DataRequired()])
+     phone = StringField("Enter patient's mobile phone for SMS messaging", validators=[DataRequired()])
+     create = SubmitField("Create")
 
+from src.service.patient_service import create_patient_service
+@main_bp.route("/create-patient", methods=["GET", "POST"])
+def create_new_patient():
+     form = NewPatientForm()
+     business_id = request.args.get('business_id')
+
+     if form.validate_on_submit():
+          first_name = form.first_name.data
+          last_name = form.last_name.data
+          phone = form.phone.data
+          create_patient_service(business_id=business_id,
+                                 first_name=first_name,
+                                 last_name=last_name,
+                                 phone=phone)
+          flash("Patient successfully created")
+          return render_template("search_patient.html", patients = [], form = PatientsForm(), business_id = business_id)
+
+     return render_template('create_patient.html', form = form, business_id=business_id)
+
+# 3) CREATE APPOINTMENT FOR PATIENT
+@main_bp.route("/create_appointment", methods=["GET"])
+def create_new_appointment():
+
+     business_id = request.args.get('business_id')
+     patient_id = request.args.get('patient_id')
+
+     return render_template('create_patient.html', business_id=business_id, patient_id=patient_id)
