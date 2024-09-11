@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, flash, redirect, request, url_for
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, TimeField, DateField
 from wtforms.validators import DataRequired
 
 main_bp = Blueprint('main', __name__)
@@ -92,14 +92,13 @@ def search_patient():
      form = PatientsForm()
      patients = []
 
-     business_id = request.args.get('business_id') or request.form.get('business_id')
+     business_id = request.args.get('business_id')
 
      if form.validate_on_submit():
           search_query = form.query.data
           patients = retrieve_patient_serivce_by_name_or_phone(search_query)
           if not patients:
                flash("Create a new patient")
-               
 
      return render_template("search_patient.html",
           patients = patients,
@@ -109,14 +108,14 @@ def search_patient():
 # 2.1) SELECT PATIENT
 @main_bp.route('/select-patient', methods=["POST"])
 def select_patient():
-     selected_business_id = request.form.get('business_id')
+     selected_business_id = request.args.get('business_id')
      selected_patient_id = request.form.get('selected_patient')
 
-     # if not selected_business_id:
-     #      flash('Please select a patient to continue.', 'warning')
-     #      return redirect(url_for('main.search_patient'))
+     if not selected_patient_id:
+          flash('Please select a patient to continue.', 'warning')
+          return render_template('search_patient.html', patients=[], form = PatientsForm(), business_id=selected_business_id)
      
-     return redirect(url_for('main.create_appointment', business_id=selected_business_id, patient_id=selected_patient_id))
+     return redirect(url_for('main.create_new_appointment', business_id=selected_business_id, patient_id=selected_patient_id))
 
 # 2.2) CREATE NEW PATIENT
 class NewPatientForm(FlaskForm):
@@ -145,10 +144,30 @@ def create_new_patient():
      return render_template('create_patient.html', form = form, business_id=business_id)
 
 # 3) CREATE APPOINTMENT FOR PATIENT
-@main_bp.route("/create_appointment", methods=["GET"])
+class NewAppointmentForm(FlaskForm):
+     time = TimeField("Enter appointment time", validators=[DataRequired()])
+     date = DateField("Enter appointment date", validators=[DataRequired()])
+     create = SubmitField("Create")
+
+from src.service.business_service import retrieve_business_serivce
+from src.service.patient_service import retrieve_patient_service
+from src.service.appointment_service import create_appointment_service
+@main_bp.route("/create_appointment", methods=["GET", "POST"])
 def create_new_appointment():
+
+     form = NewAppointmentForm()
 
      business_id = request.args.get('business_id')
      patient_id = request.args.get('patient_id')
 
-     return render_template('create_patient.html', business_id=business_id, patient_id=patient_id)
+     business = retrieve_business_serivce(business_id=business_id)
+     patient = retrieve_patient_service(patient_id=patient_id)
+
+     if form.validate_on_submit():
+          time = form.time.data
+          date = form.date.data
+          create_appointment_service(patient_id=patient_id, business_id=business_id, 
+                                     time=time, date=date)
+          flash("Appointment created successfully")
+
+     return render_template('create_appointment.html', form=form, business=business, patient=patient)
