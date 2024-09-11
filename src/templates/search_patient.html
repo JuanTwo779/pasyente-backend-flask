@@ -18,7 +18,7 @@
 
     <!-- SEARCH PATIENT FORM -->
         <h1>2. Search for patient</h1>
-        <form method="POST" action="{{ url_for('main.search_patient') }}">
+        <form method="POST" action="{{ url_for('main.search_patient' , business_id=business_id) }}">
           {{ form.hidden_tag() }}
           {{ form.query.label(class="form-label") }} 
           {{ form.query(class="form-control") }}
@@ -29,7 +29,7 @@
         <br/>
     <!-- SELECT PATIENT FORM -->
      {% if patients %}
-        <form method="POST" action="{{ url_for('main.select_patient') }}">
+        <form method="POST" action="{{ url_for('main.select_patient', business_id=business_id) }}">
           {{ form.hidden_tag() }}
           <div class="list-group">
                {% for patient in patients %}
