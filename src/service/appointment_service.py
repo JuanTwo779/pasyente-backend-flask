@@ -6,24 +6,21 @@ from datetime import datetime
 
 # C
 def create_appointment_service(patient_id, business_id, time, date):
-     # check business exists
-     # business = Business.query.get(business_id)
-     # if not business:
-     #      raise ValueError('Invalid business_id: Business does not exist')
-     
      # check patient exists
      patient = Patient.query.get(patient_id)
      if not patient:
           raise ValueError('Invalid patient_id: Patient does not exist')
      
-     # create appointment 
-     appointment_time = datetime.strptime(time, '%H:%M:%S').time()
-     appointment_date = datetime.strptime(date, '%d-%m-%Y').date()
+     # check business exists
+     business = Business.query.get(business_id)
+     if not business:
+          raise ValueError('Invalid business_id: Business does not exist')
+
      new_appointment = Appointment(
           patient_id=patient_id, 
           business_id=business_id, 
-          time=appointment_time, 
-          date=appointment_date)
+          time=time, 
+          date=date)
 
      try:
           db.session.add(new_appointment)

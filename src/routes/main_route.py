@@ -143,7 +143,7 @@ def create_new_patient():
 
      return render_template('create_patient.html', form = form, business_id=business_id)
 
-# 3) CREATE APPOINTMENT FOR PATIENT
+# 3) CREATE APPOINTMENT FOR PATIENT - needs work
 class NewAppointmentForm(FlaskForm):
      time = TimeField("Enter appointment time", validators=[DataRequired()])
      date = DateField("Enter appointment date", validators=[DataRequired()])
@@ -156,9 +156,9 @@ from src.service.appointment_service import create_appointment_service
 def create_new_appointment():
 
      form = NewAppointmentForm()
-
-     business_id = request.args.get('business_id')
-     patient_id = request.args.get('patient_id')
+     # not retained when post, retrieve from html
+     business_id = request.args.get('business_id', type=int)
+     patient_id = request.args.get('patient_id', type=int)
 
      business = retrieve_business_serivce(business_id=business_id)
      patient = retrieve_patient_service(patient_id=patient_id)
@@ -166,8 +166,12 @@ def create_new_appointment():
      if form.validate_on_submit():
           time = form.time.data
           date = form.date.data
-          create_appointment_service(patient_id=patient_id, business_id=business_id, 
+          create_appointment_service(patient_id=patient_id, 
+                                     business_id=business_id, 
                                      time=time, date=date)
           flash("Appointment created successfully")
+          return render_template("index.html")
 
-     return render_template('create_appointment.html', form=form, business=business, patient=patient)
+     return render_template('create_appointment.html', form=form, 
+                            business=business, 
+                            patient=patient)

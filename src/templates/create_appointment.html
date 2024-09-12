@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+     <div class="progress" role="progressbar" aria-label="Default striped example" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-bar progress-bar-striped" style="width: 66%">66%</div>
+     </div>
+     <br/>
+
+     {% for message in get_flashed_messages() %}
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+               {{message}}
+               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+          </div>
+     {% endfor %}
+
+     <h1>3. Create Appointment</h1>
+     <br>
+     <h3>Business: {{ business.name }}</h3>
+     <br>
+     <h5>Patient Details</h5>
+     <p>Surname: {{ patient.last_name}} </p>
+     <p>First name: {{ patient.first_name}} </p>
+     <p>Phone: {{ patient.phone}} </p>
+     <br>
+
+     <h5>Enter Appointment Details</h5>
+     <!-- retain the query params when posting -->
+     <form method="POST" action="{{ url_for('main.create_new_appointment', business_id=request.args.get('business_id'), patient_id=request.args.get('patient_id')) }}">
+          {{form.hidden_tag()}}
+          {{ form.time.label(class="form-label") }} 
+          {{ form.time(class="form-control") }}
+          {{ form.date.label(class="form-label") }} 
+          {{ form.date(class="form-control") }}
+          <br>
+          {{ form.create(class="btn btn-primary") }}
+     </form>
+
+
+{% endblock %}
