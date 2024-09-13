@@ -2,28 +2,50 @@
 
 {% block content %}
 
-     {% for message in get_flashed_messages() %}
-     <div class="alert alert-warning alert-dismissible fade show" role="alert">
-          {{message}}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-          </button>
-     </div>
-     {% endfor %}
+<div class="container mt-4">
+    <!-- Flash Messages -->
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
 
-     <h1>Fill out the fields</h1>
-     <br/>
-     <form method="POST">
-          {{ form.hidden_tag() }}
+    <!-- Form Header -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-warning text-black">
+            <h4>Fill Out the Fields</h4>
+        </div>
+        <div class="card-body">
+            <!-- Form -->
+            <form method="POST">
+                {{ form.hidden_tag() }}
 
-          {{ form.first_name.label(class="form-label") }}
-          {{ form.first_name(class="form-control") }}
-          {{ form.last_name.label(class="form-label") }}
-          {{ form.last_name(class="form-control") }}
-          {{ form.phone.label(class="form-label") }}
-          {{ form.phone(class="form-control") }}
-          <br/>
-          {{ form.create(class="btn btn-primary") }}
-     </form>
+                <!-- First Name -->
+                <div class="mb-3">
+                    {{ form.first_name.label(class="form-label") }}
+                    {{ form.first_name(class="form-control") }}
+                </div>
+
+                <!-- Last Name -->
+                <div class="mb-3">
+                    {{ form.last_name.label(class="form-label") }}
+                    {{ form.last_name(class="form-control") }}
+                </div>
+
+                <!-- Phone -->
+                <div class="mb-3">
+                    {{ form.phone.label(class="form-label") }}
+                    {{ form.phone(class="form-control") }}
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-warning">{{ form.create.label.text }}</button>
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
