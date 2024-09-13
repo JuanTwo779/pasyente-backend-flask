@@ -3,7 +3,7 @@
 {% block content %}
 
      <div class="progress" role="progressbar" aria-label="Default striped example" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">
-          <div class="progress-bar progress-bar-striped" style="width: 66%">66%</div>
+          <div class="progress-bar progress-bar-striped" style="width: 67%">66.6%</div>
      </div>
      <br/>
 
@@ -18,12 +18,18 @@
 
      <h1>3. Create Appointment</h1>
      <br>
-     <h3>Business: {{ business.name }}</h3>
-     <br>
-     <h5>Patient Details</h5>
-     <p>Surname: {{ patient.last_name}} </p>
-     <p>First name: {{ patient.first_name}} </p>
-     <p>Phone: {{ patient.phone}} </p>
+          <div class="row mb-2">
+              <div class="col-2 text-right font-weight-bold">Surname:</div>
+              <div class="col-8 text-left">{{ patient.last_name }}</div>
+          </div>
+          <div class="row mb-2">
+              <div class="col-2 text-right font-weight-bold">First name:</div>
+              <div class="col-8 text-left">{{ patient.first_name }}</div>
+          </div>
+          <div class="row mb-2">
+              <div class="col-2 text-right font-weight-bold">Phone:</div>
+              <div class="col-8 text-left">{{ patient.phone }}</div>
+          </div>
      <br>
 
      <h5>Enter Appointment Details</h5>

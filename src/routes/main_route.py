@@ -156,7 +156,7 @@ from src.service.appointment_service import create_appointment_service
 def create_new_appointment():
 
      form = NewAppointmentForm()
-     # not retained when post, retrieve from html
+     # reintroduce queries in html when posting
      business_id = request.args.get('business_id', type=int)
      patient_id = request.args.get('patient_id', type=int)
 
