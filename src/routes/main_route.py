@@ -152,7 +152,6 @@ class NewAppointmentForm(FlaskForm):
 from src.service.business_service import retrieve_business_serivce
 from src.service.patient_service import retrieve_patient_service
 from src.service.appointment_service import create_appointment_service
-from src.models.Appointment import Appointment
 @main_bp.route("/create_appointment", methods=["GET", "POST"])
 def create_new_appointment():
 
@@ -170,11 +169,8 @@ def create_new_appointment():
      if form.validate_on_submit():
           time = form.time.data
           date = form.date.data
-          # add to 
-          # create_appointment_service(patient_id=patient_id, 
-          #                            business_id=business_id, 
-          #                            time=time, date=date)
 
+          # add appointment to session list
           session['appointments'].append({
                "patient_id": patient_id,
                "business_id": business_id,
@@ -184,9 +180,7 @@ def create_new_appointment():
           session.modified = True
 
           flash("Appointment created")
-          return render_template("appointment_list.html", 
-                                 appointments = session['appointments'], 
-                                 business_id = business_id, patient_id = patient_id)
+          return redirect(url_for("main.display_appointments", business_id=business_id, patient_id=patient_id))
 
      return render_template('create_appointment.html', form=form, 
                             business=business, 
@@ -194,3 +188,14 @@ def create_new_appointment():
 
 
 # send SMS + save appointment list to DB, clear session list
+from src.models.Patient import Patient
+@main_bp.route("/appointments-list", methods=['GET'])
+def display_appointments():
+     appointments = session.get('appointments', [])
+     patient_ids = {appointment['patient_id'] for appointment in appointments}
+
+     # Query all patients associated with the appointments -> move to service
+     patients = Patient.query.filter(Patient.patient_id.in_(patient_ids)).all()
+     patient_map = {patient.patient_id: patient for patient in patients}
+
+     return render_template("appointment_list.html", appointments=appointments, patient_map=patient_map)

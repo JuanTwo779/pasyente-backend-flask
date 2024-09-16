@@ -23,27 +23,30 @@
           {% if appointments %}
           <table class="table table-bordered">
                <thead>
-                    <tr>
-                         <th>Patient ID</th>
-                         <th>Business ID</th>
-                         <th>Appointment Date</th>
-                         <th>Appointment Time</th>
-                    </tr>
+                   <tr>
+                       <th>Patient Name</th>
+                       <th>Phone</th>
+                       <th>Business ID</th>
+                       <th>Appointment Date</th>
+                       <th>Appointment Time</th>
+                   </tr>
                </thead>
                <tbody>
-                    {% for appointment in appointments %}
-                    <tr>
-                         <td>{{ appointment['patient_id'] }}</td>
-                         <td>{{ appointment['business_id'] }}</td>
-                         <td>{{ appointment['date'] }}</td>
-                         <td>{{ appointment['time'] }}</td>
-                    </tr>
-                    {% endfor %}
+                   {% for appointment in appointments %}
+                   {% set patient = patient_map[appointment['patient_id']] %}
+                   <tr>
+                       <td>{{ patient.first_name }} {{ patient.last_name }}</td>
+                       <td>{{ patient.phone }}</td>
+                       <td>{{ appointment['business_id'] }}</td>
+                       <td>{{ appointment['date'] }}</td>
+                       <td>{{ appointment['time'] }}</td>
+                   </tr>
+                   {% endfor %}
                </tbody>
-          </table>
-          {% else %}
-          <p>No appointments have been added yet.</p>
-          {% endif %}
+           </table>
+           {% else %}
+           <p>No appointments have been added yet.</p>
+           {% endif %}
 
           <a href="" class="btn btn-primary">Add New Appointment</a>
           <a href="" class="btn btn-success">Send SMS</a>
