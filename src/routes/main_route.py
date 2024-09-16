@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash, redirect, request, url_for
+from flask import Blueprint, render_template, flash, redirect, request, url_for, session
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TimeField, DateField
 from wtforms.validators import DataRequired
@@ -152,8 +152,12 @@ class NewAppointmentForm(FlaskForm):
 from src.service.business_service import retrieve_business_serivce
 from src.service.patient_service import retrieve_patient_service
 from src.service.appointment_service import create_appointment_service
+from src.models.Appointment import Appointment
 @main_bp.route("/create_appointment", methods=["GET", "POST"])
 def create_new_appointment():
+
+     if 'appointments' not in session:
+        session['appointments'] = []
 
      form = NewAppointmentForm()
      # reintroduce queries in html when posting
@@ -166,12 +170,27 @@ def create_new_appointment():
      if form.validate_on_submit():
           time = form.time.data
           date = form.date.data
-          create_appointment_service(patient_id=patient_id, 
-                                     business_id=business_id, 
-                                     time=time, date=date)
-          flash("Appointment created successfully")
-          return render_template("index.html")
+          # add to 
+          # create_appointment_service(patient_id=patient_id, 
+          #                            business_id=business_id, 
+          #                            time=time, date=date)
+
+          session['appointments'].append({
+               "patient_id": patient_id,
+               "business_id": business_id,
+               "time": str(time),
+               "date": str(date)
+          })
+          session.modified = True
+
+          flash("Appointment created")
+          return render_template("appointment_list.html", 
+                                 appointments = session['appointments'], 
+                                 business_id = business_id, patient_id = patient_id)
 
      return render_template('create_appointment.html', form=form, 
                             business=business, 
                             patient=patient)
+
+
+# send SMS + save appointment list to DB, clear session list

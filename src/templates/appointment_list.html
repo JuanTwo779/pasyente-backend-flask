@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+     <div class="container mt-4">
+          <!-- Progress Bar -->
+          <div class="progress mb-4" role="progressbar" aria-label="Default striped example" aria-valuenow="67" aria-valuemin="0" aria-valuemax="100">
+               <div class="progress-bar progress-bar-striped bg-info" style="width: 99.9%">99.9%</div>
+          </div>
+          
+          <!-- Flash Messages -->
+          {% for message in get_flashed_messages() %}
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+               {{ message }}
+               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+               </button>
+          </div>
+          {% endfor %}
+
+          <h2 class="mb-4">Appointments List</h2>
+    
+          {% if appointments %}
+          <table class="table table-bordered">
+               <thead>
+                    <tr>
+                         <th>Patient ID</th>
+                         <th>Business ID</th>
+                         <th>Appointment Date</th>
+                         <th>Appointment Time</th>
+                    </tr>
+               </thead>
+               <tbody>
+                    {% for appointment in appointments %}
+                    <tr>
+                         <td>{{ appointment['patient_id'] }}</td>
+                         <td>{{ appointment['business_id'] }}</td>
+                         <td>{{ appointment['date'] }}</td>
+                         <td>{{ appointment['time'] }}</td>
+                    </tr>
+                    {% endfor %}
+               </tbody>
+          </table>
+          {% else %}
+          <p>No appointments have been added yet.</p>
+          {% endif %}
+
+          <a href="" class="btn btn-primary">Add New Appointment</a>
+          <a href="" class="btn btn-success">Send SMS</a>
+     </div>
+
+{% endblock %}
