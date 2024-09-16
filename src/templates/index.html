@@ -1,7 +1,63 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <style>
+        body {
+            background: linear-gradient(270deg, #757f9a, #d7dde8);
+            background-size: 400% 400%;
+            animation: gradientAnimation 10s ease infinite;
+            font-family: 'Poppins', sans-serif;
+        }
 
-     INDEX
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .welcome-text {
+            text-align: center;
+            color: white;
+            font-size: 48px;
+            margin-top: 100px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+        }
+
+        .cool-button {
+            display: block;
+            margin: 50px auto;
+            padding: 15px 30px;
+            background-color: #282c34;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cool-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+          }
+          
+        .cool-button:active {
+          transform: scale(1.05);
+        }
+    </style>
+
+    <div class="welcome-text">
+        Welcome to Pasyente!
+    </div>
+
+    <a href="{{ url_for('main.search_business_name') }}">
+         <button class="cool-button">
+             Get Started!
+         </button>
+    </a>
 
 {% endblock %}
