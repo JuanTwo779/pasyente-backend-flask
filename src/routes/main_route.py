@@ -169,18 +169,20 @@ def create_new_appointment():
      if form.validate_on_submit():
           time = form.time.data
           date = form.date.data
+          formatted_time = time.strftime("%I:%M %p")  # 12-hour time with AM/PM
+          formatted_date = date.strftime("%B %d, %Y")
 
           # add appointment to session list
           session['appointments'].append({
                "patient_id": patient_id,
                "business_id": business_id,
-               "time": str(time),
-               "date": str(date)
+               "time": formatted_time,
+               "date": formatted_date
           })
           session.modified = True
 
           flash("Appointment created")
-          return redirect(url_for("main.display_appointments", business_id=business_id, patient_id=patient_id))
+          return redirect(url_for("main.draft_appointments", business_id=business_id, patient_id=patient_id))
 
      return render_template('create_appointment.html', form=form, 
                             business=business, 
@@ -189,8 +191,8 @@ def create_new_appointment():
 
 # send SMS + save appointment list to DB, clear session list
 from src.models.Patient import Patient
-@main_bp.route("/appointments-list", methods=['GET'])
-def display_appointments():
+@main_bp.route("/draft-appointments", methods=['GET'])
+def draft_appointments():
      appointments = session.get('appointments', [])
      patient_ids = {appointment['patient_id'] for appointment in appointments}
 
@@ -198,4 +200,4 @@ def display_appointments():
      patients = Patient.query.filter(Patient.patient_id.in_(patient_ids)).all()
      patient_map = {patient.patient_id: patient for patient in patients}
 
-     return render_template("appointment_list.html", appointments=appointments, patient_map=patient_map)
+     return render_template("draft_appointments.html", appointments=appointments, patient_map=patient_map)
