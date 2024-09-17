@@ -193,6 +193,7 @@ def create_new_appointment():
 from src.models.Patient import Patient
 @main_bp.route("/draft-appointments", methods=['GET'])
 def draft_appointments():
+     
      appointments = session.get('appointments', [])
      patient_ids = {appointment['patient_id'] for appointment in appointments}
 
@@ -200,4 +201,33 @@ def draft_appointments():
      patients = Patient.query.filter(Patient.patient_id.in_(patient_ids)).all()
      patient_map = {patient.patient_id: patient for patient in patients}
 
+
      return render_template("draft_appointments.html", appointments=appointments, patient_map=patient_map)
+
+@main_bp.route("/delete-draft/<int:appointment_index>", methods=["POST"])
+def delete_draft_appointment(appointment_index):
+     business_id = request.args.get('business_id', type=int)
+     patient_id = request.args.get('patient_id', type=int)
+
+     if 'appointments' in session:
+        # Remove appointment by index
+        if 0 <= appointment_index < len(session['appointments']):
+            flash("Appointment removed.")
+            session['appointments'].pop(appointment_index)
+            session.modified = True
+
+     return redirect(url_for("main.draft_appointments", business_id=business_id, patient_id=patient_id))
+
+@main_bp.route("/clear-draft-appointments", methods=['POST'])
+def clear_draft_appointments():
+     business_id = request.args.get('business_id', type=int)
+     patient_id = request.args.get('patient_id', type=int)
+
+     if 'appointments' in session:
+          session.pop('appointments')
+          session.modified = True
+          flash("All appointments cleared.")
+
+     return redirect(url_for("main.draft_appointments", business_id=business_id, patient_id=patient_id))
+
+

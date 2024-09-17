@@ -29,6 +29,7 @@
                        <th>Business ID</th>
                        <th>Appointment Date</th>
                        <th>Appointment Time</th>
+                       <th></th>
                    </tr>
                </thead>
                <tbody>
@@ -40,6 +41,11 @@
                        <td>{{ appointment['business_id'] }}</td>
                        <td>{{ appointment['date'] }}</td>
                        <td>{{ appointment['time'] }}</td>
+                       <td>
+                         <form method="POST" action="{{ url_for('main.delete_draft_appointment', appointment_index=loop.index0, business_id=request.args.get('business_id'), patient_id=request.args.get('patient_id')) }}">
+                              <button class="btn btn-danger btn-sm rounded" type="submit"><i class="fa-solid fa-circle-minus"></i></button>
+                         </form>
+                       </td>
                    </tr>
                    {% endfor %}
                </tbody>
@@ -50,8 +56,11 @@
 
            <!-- configure with request param -->
           <a href="" class="btn btn-primary">Add Appt.</a>
+          <!-- Empty out session list -->
+          <form method="POST" action="{{ url_for('main.clear_draft_appointments', business_id=request.args.get('business_id'), patient_id=request.args.get('patient_id')) }}">
+               <button class="btn btn-danger rounded"><i class="fa fa-trash"></i></button>
+          </form>
           <!-- empty list, add appointments to DB, send SMS  -->
-          <a href="" class="btn btn-danger">Clear List</a>
           <a href="" class="btn btn-success">Send SMS</a>
      </div>
 
