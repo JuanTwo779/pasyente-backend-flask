@@ -93,6 +93,7 @@ def search_patient():
      patients = []
 
      business_id = request.args.get('business_id')
+     # use business id to get business specific patients
 
      if form.validate_on_submit():
           search_query = form.query.data
@@ -151,7 +152,6 @@ class NewAppointmentForm(FlaskForm):
 
 from src.service.business_service import retrieve_business_serivce
 from src.service.patient_service import retrieve_patient_service
-from src.service.appointment_service import create_appointment_service
 @main_bp.route("/create_appointment", methods=["GET", "POST"])
 def create_new_appointment():
 
@@ -218,6 +218,7 @@ def delete_draft_appointment(appointment_index):
 
      return redirect(url_for("main.draft_appointments", business_id=business_id, patient_id=patient_id))
 
+# Clear temp storage of appointments
 @main_bp.route("/clear-draft-appointments", methods=['POST'])
 def clear_draft_appointments():
      business_id = request.args.get('business_id', type=int)
@@ -229,5 +230,14 @@ def clear_draft_appointments():
           flash("All appointments cleared.")
 
      return redirect(url_for("main.draft_appointments", business_id=business_id, patient_id=patient_id))
+
+# Add temp stprage appointments to DB + clear
+from service.appointment_service import create_appointment_service
+@main_bp.route("/process-appointments", methods=["POST"])
+def process_appointments():
+     # loop through drafts to get each appointment
+     # store each into DB 
+     clear_draft_appointments()
+     return
 
 
