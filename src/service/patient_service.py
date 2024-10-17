@@ -3,10 +3,12 @@ from src.models.Patient import Patient
 from src.models.Business import Business
 
 # Retrieve by name or phone
-def retrieve_patient_serivce_by_name_or_phone(search_query):
-     patients = Patient.query.filter((Patient.first_name.contains(search_query)) | 
-                                    (Patient.phone.contains(search_query)) |
-                                    (Patient.last_name.contains(search_query))).all()
+def retrieve_patient_serivce_by_name_or_phone(search_query, business_id):
+     patients = Patient.query.filter(
+          (Patient.first_name.contains(search_query)) | 
+          (Patient.phone.contains(search_query)) |
+          (Patient.last_name.contains(search_query))
+          ).filter(Patient.business_id == business_id).all()
      return patients
 
 # C

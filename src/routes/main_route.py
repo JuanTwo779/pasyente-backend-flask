@@ -82,7 +82,8 @@ def search_patient():
 
      if form.validate_on_submit():
           search_query = form.query.data
-          patients = retrieve_patient_serivce_by_name_or_phone(search_query)
+          patients = retrieve_patient_serivce_by_name_or_phone(search_query, business_id)
+          # print(business_id)
           if not patients:
                flash("Create a new patient")
 
@@ -163,21 +164,23 @@ def create_new_appointment():
                             patient=patient)
 
 
-# send SMS + save appointment list to DB, clear session list
+# view draft appointments
 from src.models.Patient import Patient
 @main_bp.route("/draft-appointments", methods=['GET'])
 def draft_appointments():
      
+     # get session appointments
      appointments = session.get('appointments', [])
+     # get each patient id of the appointment
      patient_ids = {appointment['patient_id'] for appointment in appointments}
 
-     # Query all patients associated with the appointments -> move to service
+     # Query all patients associated with the appointments to easily get patient data for UI
      patients = Patient.query.filter(Patient.patient_id.in_(patient_ids)).all()
      patient_map = {patient.patient_id: patient for patient in patients}
 
-
      return render_template("draft_appointments.html", appointments=appointments, patient_map=patient_map)
 
+# delete specific appointment
 @main_bp.route("/delete-draft/<int:appointment_index>", methods=["POST"])
 def delete_draft_appointment(appointment_index):
      business_id = request.args.get('business_id', type=int)
@@ -192,7 +195,7 @@ def delete_draft_appointment(appointment_index):
 
      return redirect(url_for("main.draft_appointments", business_id=business_id, patient_id=patient_id))
 
-# Clear temp storage of appointments
+# clear temp storage of appointments
 @main_bp.route("/clear-draft-appointments", methods=['POST'])
 def clear_draft_appointments():
      business_id = request.args.get('business_id', type=int)
@@ -206,10 +209,11 @@ def clear_draft_appointments():
      return redirect(url_for("main.draft_appointments", business_id=business_id, patient_id=patient_id))
 
 # Add temp stprage appointments to DB + clear
+from src.service.appointment_service import create_appointment_service
 @main_bp.route("/process-appointments", methods=["POST"])
 def process_appointments():
      # loop through drafts to get each appointment
-     # store each into DB 
+     # store each into DB, send SMS  
      clear_draft_appointments()
      return
 
