@@ -3,18 +3,11 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TimeField, DateField
 from wtforms.validators import DataRequired
 
+from src.forms import NamerForm, BusinessesForm, NewBusinessForm, PatientsForm, NewPatientForm, NewAppointmentForm
+
 main_bp = Blueprint('main', __name__)
 
-@main_bp.route("/")
-def index():
-     return render_template("index.html")
-
-
-# test form
-class NamerForm(FlaskForm):
-     name = StringField("What's your name?", validators=[DataRequired()])
-     submit = SubmitField("Submit")     
-
+# test route
 @main_bp.route("/name", methods=['GET', "POST"])
 def name():
      name = None
@@ -29,11 +22,12 @@ def name():
           name = name,
           form = form)
 
-# 1) SEARCH FOR BUSINESS
-class BusinessesForm(FlaskForm):
-     query = StringField("Enter business name", validators=[DataRequired()])
-     search = SubmitField("Search")
+# start route
+@main_bp.route("/")
+def index():
+     return render_template("index.html")   
 
+# 1) SEARCH FOR BUSINESS
 from src.service.business_service import retrieve_businesses_serivce_by_name
 @main_bp.route("/search-business", methods=["GET", "POST"])
 def search_business_name():
@@ -62,11 +56,6 @@ def select_business():
      return redirect(url_for('main.search_patient', business_id=selected_business_id))
 
 # 1.2) CREATE NEW BUSINESS
-class NewBusinessForm(FlaskForm):
-     name = StringField("Enter your business's name here:", validators=[DataRequired()])
-     phone = StringField("Enter your business's phone number here:", validators=[DataRequired()])
-     create = SubmitField("Create")
-
 from src.service.business_service import create_business_service
 @main_bp.route("/create-business", methods=["GET", "POST"])
 def create_new_business():
@@ -82,10 +71,6 @@ def create_new_business():
      return render_template('create_business.html', form = form)
 
 # 2) SEARCH FOR PATIENTS
-class PatientsForm(FlaskForm):
-     query = StringField("Search patient by name or phone", validators=[DataRequired()])
-     search = SubmitField("Search")
-
 from src.service.patient_service import retrieve_patient_serivce_by_name_or_phone
 @main_bp.route("/search-patient", methods=["GET", "POST"])
 def search_patient():
@@ -119,12 +104,6 @@ def select_patient():
      return redirect(url_for('main.create_new_appointment', business_id=selected_business_id, patient_id=selected_patient_id))
 
 # 2.2) CREATE NEW PATIENT
-class NewPatientForm(FlaskForm):
-     first_name = StringField("Enter patient's given name", validators=[DataRequired()])
-     last_name = StringField("Enter patient's surname", validators=[DataRequired()])
-     phone = StringField("Enter patient's mobile phone for SMS messaging", validators=[DataRequired()])
-     create = SubmitField("Create")
-
 from src.service.patient_service import create_patient_service
 @main_bp.route("/create-patient", methods=["GET", "POST"])
 def create_new_patient():
@@ -145,11 +124,6 @@ def create_new_patient():
      return render_template('create_patient.html', form = form, business_id=business_id)
 
 # 3) CREATE APPOINTMENT FOR PATIENT - needs work
-class NewAppointmentForm(FlaskForm):
-     time = TimeField("Enter appointment time", validators=[DataRequired()])
-     date = DateField("Enter appointment date", validators=[DataRequired()])
-     create = SubmitField("Create")
-
 from src.service.business_service import retrieve_business_serivce
 from src.service.patient_service import retrieve_patient_service
 @main_bp.route("/create_appointment", methods=["GET", "POST"])
@@ -182,7 +156,7 @@ def create_new_appointment():
           session.modified = True
 
           flash("Appointment created")
-          return redirect(url_for("main.draft_appointments", business_id=business_id, patient_id=patient_id))
+          return redirect(url_for("main.draft_appointments", business_id=business_id))
 
      return render_template('create_appointment.html', form=form, 
                             business=business, 
@@ -232,7 +206,6 @@ def clear_draft_appointments():
      return redirect(url_for("main.draft_appointments", business_id=business_id, patient_id=patient_id))
 
 # Add temp stprage appointments to DB + clear
-from service.appointment_service import create_appointment_service
 @main_bp.route("/process-appointments", methods=["POST"])
 def process_appointments():
      # loop through drafts to get each appointment
