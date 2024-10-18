@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, flash, redirect, request, url_for,
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TimeField, DateField
 from wtforms.validators import DataRequired
+from datetime import datetime
 
 from src.forms import NamerForm, BusinessesForm, NewBusinessForm, PatientsForm, NewPatientForm, NewAppointmentForm
 
@@ -124,7 +125,7 @@ def create_new_patient():
 
      return render_template('create_patient.html', form = form, business_id=business_id)
 
-# 3) CREATE APPOINTMENT FOR PATIENT - needs work
+# 3) CREATE APPOINTMENT FOR PATIENT
 from src.service.business_service import retrieve_business_serivce
 from src.service.patient_service import retrieve_patient_service
 @main_bp.route("/create_appointment", methods=["GET", "POST"])
@@ -163,8 +164,7 @@ def create_new_appointment():
                             business=business, 
                             patient=patient)
 
-
-# view draft appointments
+# 4) view draft appointments
 from src.models.Patient import Patient
 @main_bp.route("/draft-appointments", methods=['GET'])
 def draft_appointments():
@@ -180,7 +180,7 @@ def draft_appointments():
 
      return render_template("draft_appointments.html", appointments=appointments, patient_map=patient_map)
 
-# delete specific appointment
+# 4.1) delete specific appointment
 @main_bp.route("/delete-draft/<int:appointment_index>", methods=["POST"])
 def delete_draft_appointment(appointment_index):
      business_id = request.args.get('business_id', type=int)
@@ -189,13 +189,13 @@ def delete_draft_appointment(appointment_index):
      if 'appointments' in session:
         # Remove appointment by index
         if 0 <= appointment_index < len(session['appointments']):
-            flash("Appointment removed.")
+          #   flash("Appointment removed.")
             session['appointments'].pop(appointment_index)
             session.modified = True
 
      return redirect(url_for("main.draft_appointments", business_id=business_id, patient_id=patient_id))
 
-# clear temp storage of appointments
+# 4.2) clear temp storage of appointments
 @main_bp.route("/clear-draft-appointments", methods=['POST'])
 def clear_draft_appointments():
      business_id = request.args.get('business_id', type=int)
@@ -208,13 +208,28 @@ def clear_draft_appointments():
 
      return redirect(url_for("main.draft_appointments", business_id=business_id, patient_id=patient_id))
 
-# Add temp stprage appointments to DB + clear
+# 4.3) Add temp stprage appointments to DB + clear
 from src.service.appointment_service import create_appointment_service
+from src.models.Appointment import Appointment
 @main_bp.route("/process-appointments", methods=["POST"])
 def process_appointments():
-     # loop through drafts to get each appointment
-     # store each into DB, send SMS  
+     business_id = request.args.get('business_id', type=int)
+
+     for apt in session['appointments']:
+          patient = apt['patient_id']
+          business = apt['business_id']
+          time = apt['time']
+          date = apt['date']
+
+          # Convert the time and date string to time and date object 
+          parsed_time = datetime.strptime(time, "%I:%M %p").time()
+          parsed_date = datetime.strptime(date, "%B %d, %Y").date()
+
+          # new_apt = Appointment(patient, business, time, date)
+          create_appointment_service(patient, business, parsed_time, parsed_date)
+
+     # Send SMS to each using patient_id
+
      clear_draft_appointments()
-     return
-
-
+     flash("Appointments processed.")
+     return redirect(url_for("main.draft_appointments", business_id=business_id))

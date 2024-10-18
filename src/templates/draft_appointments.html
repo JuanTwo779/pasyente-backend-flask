@@ -64,13 +64,13 @@
                </div>
                <div class="m-1">
                     <!-- Empty out session list -->
-                    <form method="POST" action="{{ url_for('main.clear_draft_appointments', business_id=request.args.get('business_id'), patient_id=request.args.get('patient_id')) }}">
+                    <form method="POST" action="{{ url_for('main.clear_draft_appointments', business_id=request.args.get('business_id')) }}">
                          <button class="btn btn-danger rounded"><i class="fa fa-trash"></i></button>
                     </form>
                </div>
                <div class="m-1">
                     <!-- empty list, add appointments to DB, send SMS  -->
-                    <form method="POST" action="{{ url_for('') }}">
+                    <form method="POST" action="{{ url_for('main.process_appointments', business_id=request.args.get('business_id')) }}">
                          <button class="btn btn-success rounded"><i class="fa-solid fa-message"></i></button>
                     </form>
                </div>
