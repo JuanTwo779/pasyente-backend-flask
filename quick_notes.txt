@@ -17,3 +17,6 @@ DB migration
 - using Flask-Migrate -> extension of SQLAlchemy
 1. flask db migrate -m "Migration_name"
 2. flask db upgrade
+
+Flask commands
+- dev: flask run --reload
