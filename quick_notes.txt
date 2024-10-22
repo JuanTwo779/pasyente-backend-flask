@@ -20,3 +20,10 @@ DB migration
 
 Flask commands
 - dev: flask run --reload
+
+pip
+- pip freeze : list installed dependencies
+- pip freeze > requirements.txt : create/update requirements file 
+
+virtual environment (windows)
+- .\(venv_name)\Scripts\activate
