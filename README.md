@@ -7,16 +7,15 @@ This project is a mockup for a **Patient SMS Reminder Application**, designed to
 
 ## Features
 
-- **Appointment Reminders**: Automatically sends SMS reminders to patients about their scheduled appointments.
-- **Longcode Integration**: Uses AWS services and a longcode to send personalized messages to patients.
+- **Appointment Reminders**: Sends SMS reminders to patients about their scheduled appointments.
+- **Longcode Integration**: Uses AWS services and a longcode to send personalised messages to patients.
 - **Flask Backend**: The application is built using **Flask**, a lightweight Python web framework, providing a simple yet powerful backend for handling requests.
-- **SMS Confirmation**: Patients can confirm their appointments by replying "YES" to the SMS, which is then recorded in the system.
 - **Database Integration**: The app integrates with **MySQL** via **SQLAlchemy** to store patient details and appointment information.
 
 ## Technologies Used
 
 - **Flask**: Web framework to handle backend operations.
-- **AWS Services**: Utilizes **AWS** for sending SMS via longcodes, providing reliable messaging services.
+- **AWS Services**: Utilises **AWS** for sending SMS via longcodes, providing reliable messaging services.
 - **Flask-SQLAlchemy**: To interact with the MySQL database for storing and retrieving patient appointment data.
 - **Flask-WTF**: To simplify form handling, including patient input for appointment scheduling.
 - **MySQL**: Used to store patient details, including phone numbers and appointment information.
@@ -73,12 +72,3 @@ This project is a mockup for a **Patient SMS Reminder Application**, designed to
 3. The patient can confirm the appointment by replying "YES" to the SMS, which is then updated in the system.
 4. The user (admin) can view the patient's confirmation status and manage upcoming appointments.
 
-## Future Enhancements
-
-- **Multi-Language Support**: Add the ability to send SMS reminders in multiple languages based on patient preferences.
-- **Web Interface**: Create an intuitive web interface for both patients and administrators to manage appointments and confirmations.
-- **Analytics**: Provide statistics and analytics on appointment confirmations, no-shows, etc.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
